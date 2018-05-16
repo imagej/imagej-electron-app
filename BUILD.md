@@ -12,6 +12,7 @@ npm install
 ## Probably will need to rebuild electron for this node version:
 ```
 ./node_modules/.bin/electron-rebuild
+node ./node_modules/java/postInstall.js
 ```
 
 ## Install the java deps
