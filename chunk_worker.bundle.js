@@ -1,0 +1,1 @@
+neuroglancer-dist/dev/chunk_worker.bundle.js

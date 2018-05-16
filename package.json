@@ -4,6 +4,9 @@
   "description": "An Electron application for image viewing",
   "main": "main.js",
   "scripts": {
+    "build": "webpack --config ./neuroglancer-config/webpack.config.js --display-modules --env=dev",
+    "build:watch": "webpack --config ./neuroglancer-config/webpack.config.js --watch",
+    "dev-server": "webpack-dev-server --config ./neuroglancer-config/webpack.config.js",
     "start": "electron ."
   },
   "repository": "https://github.com/imaging-tools/imaging-electron-app",
@@ -22,6 +25,8 @@
   "dependencies": {
     "java": "^0.9.1",
     "node-java-maven": "^0.1.1",
+    "neuroglancer": "imaging-tools/neuroglancer",
+    "webpack": "^3.4.1",
     "vtk.js": "^6.4.24"
   },
   "java": {
