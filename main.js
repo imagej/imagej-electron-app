@@ -1,4 +1,6 @@
 const electron = require('electron')
+const { ipcMain } = require('electron')
+
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -55,6 +57,14 @@ app.on('activate', function () {
     createWindow()
   }
 })
+
+ipcMain.on('ondragstart', (event, filePath) => {
+  event.sender.startDrag({
+    file: filePath,
+    icon: '/path/to/icon.png'
+  })
+})
+
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
