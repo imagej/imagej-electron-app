@@ -20,6 +20,33 @@
     "electron-rebuild": "^1.7.3"
   },
   "dependencies": {
+    "java": "^0.9.1",
+    "node-java-maven": "^0.1.1",
     "vtk.js": "^6.4.24"
+  },
+  "java": {
+    "dependencies": [
+      {
+        "groupId": "net.imagej",
+        "artifactId": "imagej",
+        "version": "2.0.0-rc-65"
+      }
+    ],
+    "repositories": [
+      {
+        "id": "imagej.public",
+        "url": "https://maven.imagej.net/content/groups/public/"
+      }
+    ],
+    "exclusions": [
+      {
+        "groupId": "org.scijava",
+        "artifactId": "scripting-jruby"
+      },
+      {
+        "groupId": "net.imglib2",
+        "artifactId": "imglib2-realtransform"
+      }
+    ]
   }
 }

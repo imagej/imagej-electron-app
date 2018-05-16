@@ -9,6 +9,43 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 
+
+// --- BEGIN MAVEN STUFF ---
+var java = require('java');
+var mvn = require('node-java-maven');
+
+mvn(function(err, mvnResults) {
+  if (err) {
+    return console.error('could not resolve maven dependencies', err);
+  }
+  mvnResults.classpath.forEach(function(c) {
+    console.log('adding ' + c + ' to classpath');
+    java.classpath.push(c);
+  });
+
+  var System = java.import('java.lang.System');
+  System.setProperty('java.awt.headless', 'true');
+
+  //var ImageJ = java.import('net.imagej.ImageJ');
+  //ij = ImageJ();
+
+  //dataPath = "/Users/curtis/data/clown8.tif";
+  //data = ij.scifioSync().datasetIOSync().openSync(dataPath);
+  var FileUtils = java.import('org.scijava.util.FileUtils');
+  var File = java.import('java.io.File');
+
+  ipcMain.on('filereceived', (event, filePath) => {
+    console.log(filePath);
+    //ij.logSync().warnSync("FILE RECEIVED, JAVA RESPONDS");
+    file = File(filePath);
+    bytes = FileUtils.readFile(file);
+    console.log("JAVA READ THE BYTES: " + bytes);
+  })
+
+});
+
+// /// END MAVEN STUFF ---
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -56,10 +93,6 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
-})
-
-ipcMain.on('filereceived', (event, filePath) => {
-  console.log(filePath)
 })
 
 console.log('hi')
