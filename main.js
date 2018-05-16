@@ -58,12 +58,11 @@ app.on('activate', function () {
   }
 })
 
-ipcMain.on('ondragstart', (event, filePath) => {
-  event.sender.startDrag({
-    file: filePath,
-    icon: '/path/to/icon.png'
-  })
+ipcMain.on('filereceived', (event, filePath) => {
+  console.log(filePath)
 })
+
+console.log('hi')
 
 
 // In this file you can include the rest of your app's specific main process
