@@ -1,17 +1,16 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "imaging-electron-app",
+  "version": "0.1.0",
+  "description": "An Electron application for image viewing",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/imaging-tools/imaging-electron-app",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
+    "imaging",
+    "java",
     "demo"
   ],
   "author": "GitHub",
