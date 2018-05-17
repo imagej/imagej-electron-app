@@ -9,7 +9,8 @@
     "dev-server": "webpack-dev-server --config ./neuroglancer-config/webpack.config.js",
     "start": "electron .",
     "rebuild": "electron-rebuild",
-    "postinstall": "node node_modules/java/postInstall.js"
+    "postinstall": "node node_modules/java/postInstall.js",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64  --prune=true --out=release-builds"
   },
   "repository": "https://github.com/imaging-tools/imaging-electron-app",
   "keywords": [
@@ -22,7 +23,8 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "~2.0.0",
-    "electron-rebuild": "^1.7.3"
+    "electron-rebuild": "^1.7.3",
+    "electron-packager": "^12.0.2"
   },
   "dependencies": {
     "java": "^0.9.1",
