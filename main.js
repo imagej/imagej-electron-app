@@ -15,6 +15,7 @@ var java = require('java');
 var mvn = require('node-java-maven');
 
 mvn(function(err, mvnResults) {
+  console.log('inside maven')
   if (err) {
     return console.error('could not resolve maven dependencies', err);
   }
@@ -52,7 +53,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 600, height: 600})
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
