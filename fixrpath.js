@@ -58,7 +58,7 @@ require('find-java-home')(function(err, home){
   /* Add reference to downloaded JRE */
   addpath(binary, "jre1.8.0_172.jre/Contents/Home/lib/server/");
 
-  addpath(binary, "Contents/Resources/app/jre1.8.0_172.jre/Contents/Home/lib/server");
+  addpath(binary, "@executable_path/../Resources/app/jre1.8.0_172.jre/Contents/Home/lib/server");
 
 });
 
