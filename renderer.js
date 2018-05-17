@@ -34,3 +34,7 @@ imagejButton.onclick = (e) => {
   ipcRenderer.send('showimagejui')
   return false;
 }
+
+ipcRenderer.on('parsecomplete', (event, info) => {
+  console.log('PARSE COMPLETE: dims=[' + info.x + ',' + info.y + ',' + info.z + '], type=' + info.type);
+});

@@ -40,8 +40,8 @@ mvn(function(err, mvnResults) {
   ij = ImageJ();
   console.log('==> ImageJ READY!');
 
-  var Views = java.import('net.imglib2.view.Views');
   var Intervals = java.import('net.imglib2.util.Intervals');
+  var Views     = java.import('net.imglib2.view.Views');
 
   var volumes = new Map();
 
@@ -53,6 +53,7 @@ mvn(function(err, mvnResults) {
   ipcMain.on('filereceived', (event, filePath) => {
     console.log('Asking ImageJ to read: ' + filePath);
     ij.scifio().datasetIO().openPromise(filePath).then(data => {
+      // Keep a table of current data objects, keyed on name/path.
       volumes.set(filePath, data);
 
       // Ensure the data is (at least) 3-dimensional.
@@ -60,29 +61,51 @@ mvn(function(err, mvnResults) {
         data = Views.addDimension(data, 0, 0);
       }
 
+      var info = {}
+      info.name = filePath;
+
+      // Extract dimensional lengths.
+      dims = Intervals.dimensionsAsLongArray(data);
+      info.x = dims[0].longValue();
+      info.y = dims[1].longValue();
+      info.z = dims[2].longValue();
+      console.log('Dimensions = ' + info.x + ', ' + info.y + ', ' + info.z);
+
+      // Extract the pixel type.
+      typeName = data.firstElement().getClass().getName();
+      if (typeName.endsWith(".UnsignedByteType")) {
+        info.type = "uint8";
+      }
+      else if (typeName.endsWith(".UnsignedShortType")) {
+        info.type = "uint16";
+      }
+      else {
+        info.type = "float32";
+      }
+      console.log('Type = ' + info.type + ' (' + typeName + ')');
+
       // TODO: handle axis types:
       // - data.axis(0)
       // TODO: handle physical sizes:
       // - ((CalibratedAxis) data.axis(0)).averageScale(0, 1)
 
-      // Extract dimensional lengths.
-      dims = Intervals.dimensionsAsLongArray(data);
-      x = dims[0].longValue();
-      y = dims[1].longValue();
-      z = dims[2].longValue();
-      console.log('Dimensions = ' + x + ', ' + y + ', ' + z);
-
-      // TODO: send message to renderer? tell dimensions and data type
+      // START HERE - Why can't I do this?
+      //ipcMain.send('parsecomplete', info);
     });
-    // 1. Where do we send these bytes/data?
-    // 2. Actually change this to read an image and extract its bytes/data.
-    // 3. Asynchronous?
   });
 
   ipcMain.on('blockrequested', (event, block) => {
     data = volumes.get(block.path);
     region = Views.interval(data, block.min, block.max);
     // START HERE: copy the region into desired primitive(?) structure.
+    /*
+    x = region.dimension(0)
+    y = region.dimension(1)
+    z = region.dimension(2)
+    float[] data = new float[x * y * z]
+    outImg = ArrayImgs.floats(data, x, y, z)
+    ij.ops().convert().float32(outImg, img)
+    */
   });
 });
 
