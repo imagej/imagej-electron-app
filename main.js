@@ -26,13 +26,13 @@ mvn(function(err, mvnResults) {
 
   java.asyncOptions = {
     asyncSuffix: "Async",
-    syncSuffix: "Sync",
+    syncSuffix: "",
     promiseSuffix: "Promise",
     promisify: require("when/node").lift
   };
 
   var System = java.import('java.lang.System');
-  var javaVersion = System.getPropertySync('java.version');
+  var javaVersion = System.getProperty('java.version');
   console.log('==> Java version = ' + javaVersion);
 
   console.log('==> ImageJ STARTING!');
@@ -47,17 +47,17 @@ mvn(function(err, mvnResults) {
 
   ipcMain.on('showimagejui', (event) => {
     console.log('Displaying the ImageJ UI');
-    ij.uiSync().showUIAsync();
+    ij.ui().showUIAsync();
   });
 
   ipcMain.on('filereceived', (event, filePath) => {
     console.log('Asking ImageJ to read: ' + filePath);
-    ij.scifioSync().datasetIOSync().openPromise(filePath).then(data => {
+    ij.scifio().datasetIO().openPromise(filePath).then(data => {
       volumes.set(filePath, data);
 
       // Ensure the data is (at least) 3-dimensional.
-      while (data.numDimensionsSync() < 3) {
-        data = Views.addDimensionSync(data, 0, 0);
+      while (data.numDimensions() < 3) {
+        data = Views.addDimension(data, 0, 0);
       }
 
       // TODO: handle axis types:
@@ -66,10 +66,10 @@ mvn(function(err, mvnResults) {
       // - ((CalibratedAxis) data.axis(0)).averageScale(0, 1)
 
       // Extract dimensional lengths.
-      dims = Intervals.dimensionsAsLongArraySync(data);
-      x = dims[0].longValueSync();
-      y = dims[1].longValueSync();
-      z = dims[2].longValueSync();
+      dims = Intervals.dimensionsAsLongArray(data);
+      x = dims[0].longValue();
+      y = dims[1].longValue();
+      z = dims[2].longValue();
       console.log('Dimensions = ' + x + ', ' + y + ', ' + z);
 
       // TODO: send message to renderer? tell dimensions and data type
