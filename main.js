@@ -9,7 +9,7 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 
-console.log('==> Java is booting');
+console.log('==> Booting Java');
 
 var java = require('java');
 var mvn = require('node-java-maven');
@@ -20,7 +20,6 @@ mvn(function(err, mvnResults) {
     return console.error('could not resolve maven dependencies', err);
   }
   mvnResults.classpath.forEach(function(c) {
-    console.log('adding ' + c + ' to classpath');
     java.classpath.push(c);
   });
 
