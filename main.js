@@ -32,7 +32,6 @@ mvn(function(err, mvnResults) {
   };
 
   var System = java.import('java.lang.System');
-  System.setPropertySync('java.awt.headless', 'true');
   var javaVersion = System.getPropertySync('java.version');
   console.log('==> Java version = ' + javaVersion);
 
@@ -45,6 +44,12 @@ mvn(function(err, mvnResults) {
   var Intervals = java.import('net.imglib2.util.Intervals');
 
   var volumes = new Map();
+
+  ipcMain.on('showimagejui', (event) => {
+    console.log('Displaying the ImageJ UI');
+    ij.uiSync().showUIAsync();
+  });
+
   ipcMain.on('filereceived', (event, filePath) => {
     console.log('Asking ImageJ to read: ' + filePath);
     ij.scifioSync().datasetIOSync().openPromise(filePath).then(data => {

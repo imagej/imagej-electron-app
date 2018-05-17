@@ -27,3 +27,10 @@ holder.ondrop = (e) => {
   
   return false
 }
+
+var imagejButton = document.getElementById('imagej')
+
+imagejButton.onclick = (e) => {
+  ipcRenderer.send('showimagejui')
+  return false;
+}
