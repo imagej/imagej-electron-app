@@ -9,8 +9,8 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 
+console.log('==> Java is booting');
 
-// --- BEGIN MAVEN STUFF ---
 var java = require('java');
 var mvn = require('node-java-maven');
 
@@ -24,28 +24,62 @@ mvn(function(err, mvnResults) {
     java.classpath.push(c);
   });
 
+  java.asyncOptions = {
+    asyncSuffix: "Async",
+    syncSuffix: "Sync",
+    promiseSuffix: "Promise",
+    promisify: require("when/node").lift
+  };
+
   var System = java.import('java.lang.System');
-  System.setProperty('java.awt.headless', 'true');
+  System.setPropertySync('java.awt.headless', 'true');
+  var javaVersion = System.getPropertySync('java.version');
+  console.log('==> Java version = ' + javaVersion);
 
-  //var ImageJ = java.import('net.imagej.ImageJ');
-  //ij = ImageJ();
+  console.log('==> ImageJ STARTING!');
+  var ImageJ = java.import('net.imagej.ImageJ');
+  ij = ImageJ();
+  console.log('==> ImageJ READY!');
 
-  //dataPath = "/Users/curtis/data/clown8.tif";
-  //data = ij.scifioSync().datasetIOSync().openSync(dataPath);
-  var FileUtils = java.import('org.scijava.util.FileUtils');
-  var File = java.import('java.io.File');
+  var Views = java.import('net.imglib2.view.Views');
+  var Intervals = java.import('net.imglib2.util.Intervals');
 
+  var volumes = new Map();
   ipcMain.on('filereceived', (event, filePath) => {
-    console.log(filePath);
-    //ij.logSync().warnSync("FILE RECEIVED, JAVA RESPONDS");
-    file = File(filePath);
-    bytes = FileUtils.readFile(file);
-    console.log("JAVA READ THE BYTES: " + bytes);
-  })
+    console.log('Asking ImageJ to read: ' + filePath);
+    ij.scifioSync().datasetIOSync().openPromise(filePath).then(data => {
+      volumes.set(filePath, data);
 
+      // Ensure the data is (at least) 3-dimensional.
+      while (data.numDimensionsSync() < 3) {
+        data = Views.addDimensionSync(data, 0, 0);
+      }
+
+      // TODO: handle axis types:
+      // - data.axis(0)
+      // TODO: handle physical sizes:
+      // - ((CalibratedAxis) data.axis(0)).averageScale(0, 1)
+
+      // Extract dimensional lengths.
+      dims = Intervals.dimensionsAsLongArraySync(data);
+      x = dims[0].longValueSync();
+      y = dims[1].longValueSync();
+      z = dims[2].longValueSync();
+      console.log('Dimensions = ' + x + ', ' + y + ', ' + z);
+
+      // TODO: send message to renderer? tell dimensions and data type
+    });
+    // 1. Where do we send these bytes/data?
+    // 2. Actually change this to read an image and extract its bytes/data.
+    // 3. Asynchronous?
+  });
+
+  ipcMain.on('blockrequested', (event, block) => {
+    data = volumes.get(block.path);
+    region = Views.interval(data, block.min, block.max);
+    // START HERE: copy the region into desired primitive(?) structure.
+  });
 });
-
-// /// END MAVEN STUFF ---
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

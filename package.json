@@ -26,10 +26,11 @@
   },
   "dependencies": {
     "java": "^0.9.1",
-    "node-java-maven": "^0.1.1",
     "neuroglancer": "imaging-tools/neuroglancer",
+    "node-java-maven": "^0.1.1",
+    "vtk.js": "^6.4.24",
     "webpack": "^3.4.1",
-    "vtk.js": "^6.4.24"
+    "when": "^3.7.8"
   },
   "java": {
     "dependencies": [
