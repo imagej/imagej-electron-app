@@ -2,7 +2,7 @@
   "name": "imaging-electron-app",
   "version": "0.1.0",
   "description": "An Electron application for image viewing",
-  "main": "main.js",
+  "main": "src/main",
   "scripts": {
     "start": "electron src/main",
     "rebuild": "electron-rebuild",
