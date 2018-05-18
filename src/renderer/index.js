@@ -2,6 +2,7 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 const { ipcRenderer } = require('electron')
+const fs = require('fs')
 
 var holder = document.getElementById('drag-file')
 
@@ -88,9 +89,17 @@ var imagejButton = document.getElementById('imagej')
 console.log('==> Booting Java');
 
 config = {}
-config.headless = true
 config.imagej_dir = process.env.IMAGEJ_DIR
-if (!config.imagej_dir) throw ('Please set IMAGEJ_DIR to your ImageJ installation folder.')
+if (!config.imagej_dir) {
+  // Search for ImageJ in common locations (covers npm run, electron app, and standard OS X)
+  imagej_paths = ["Fiji.app", "../Resources/app/Fiji.app", "/Applications/Fiji.app"]
+  for (const ijp of imagej_paths) {
+    if (fs.existsSync(ijp)) {
+      config.imagej_dir = ijp;
+      break;
+    }
+  }
+}
 
 console.log("==> Initializing ImageJ from renderer process")
 var imagej = require('imagej')(config)
