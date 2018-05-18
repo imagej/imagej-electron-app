@@ -9,7 +9,7 @@
     "dev-server": "webpack-dev-server --config ./neuroglancer-config/webpack.config.js",
     "start": "electron .",
     "rebuild": "electron-rebuild",
-    "postinstall": "node node_modules/java/postInstall.js",
+    "postinstall": "node fixrpath.js && node node_modules/java/postInstall.js",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64  --prune=true --out=release-builds"
   },
   "repository": "https://github.com/imaging-tools/imaging-electron-app",
