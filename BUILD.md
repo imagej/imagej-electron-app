@@ -40,6 +40,6 @@ npm start
 # To create a bundled app
 ## Run electron-package
 MacOS:
-```npm package-mac```
+```npm run package-mac```
 
 
