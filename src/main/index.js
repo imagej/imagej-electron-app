@@ -8,11 +8,22 @@ const BrowserWindow = electron.BrowserWindow
 
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
 
 console.log('==> Booting Java');
 
 config = {}
 config.imagej_dir = process.env.IMAGEJ_DIR
+if (!config.imagej_dir) {
+  // Search for ImageJ in common locations (covers npm run, electron app, and standard OS X)
+  imagej_paths = ["Fiji.app", "../Resources/app/Fiji.app", "/Applications/Fiji.app"]
+  for (const ijp of imagej_paths) {
+    if (fs.existsSync(ijp)) {
+      config.imagej_dir = ijp;
+      break;
+    }
+  }
+}
 if (!config.imagej_dir) throw ('Please set IMAGEJ_DIR to your ImageJ installation folder.')
 
 var imagej = require('imagej')(config);
