@@ -1,7 +1,7 @@
 /* Update the rpath associated with nodejavabridge_bindings.node to use the bundled JRE.
+ *
+ * This is for OS X only.
  */
-
-// install_name_tool -rpath /Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/jre/lib/server jre1.8.0_172.jre/Contents/Home/lib/server/ node_modules/java/build/Release/nodejavabridge_bindings.node
 
 function deletepath(binary, rpath) {
   if (process.platform === 'darwin') {
@@ -56,9 +56,9 @@ require('find-java-home')(function(err, home){
   deletepath(binary, home + "/jre/lib/server");
 
   /* Add reference to downloaded JRE */
-  addpath(binary, "jre1.8.0_172.jre/Contents/Home/lib/server/");
+  addpath(binary, "Fiji.app/java/macosx/jdk1.8.0_172.jre/jre/Contents/Home/lib/server");
 
-  addpath(binary, "@executable_path/../Resources/app/jre1.8.0_172.jre/Contents/Home/lib/server");
+  addpath(binary, "@executable_path/../Resources/app/Fiji.app/java/macosx/jdk1.8.0_172.jre/jre/Contents/Home/lib/server");
 
 });
 
