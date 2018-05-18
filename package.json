@@ -7,7 +7,7 @@
     "build": "webpack --config ./neuroglancer-config/webpack.config.js --display-modules --env=dev",
     "build:watch": "webpack --config ./neuroglancer-config/webpack.config.js --watch",
     "dev-server": "webpack-dev-server --config ./neuroglancer-config/webpack.config.js",
-    "start": "electron .",
+    "start": "electron src/main",
     "rebuild": "electron-rebuild",
     "postinstall": "node fixrpath.js && node node_modules/java/postInstall.js",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64  --prune=true --out=release-builds"
@@ -27,41 +27,12 @@
     "electron-packager": "^12.0.2"
   },
   "dependencies": {
+    "imagej": "^1.0.0",
     "java": "^0.9.1",
     "neuroglancer": "imaging-tools/neuroglancer",
     "node-java-maven": "^0.1.1",
     "vtk.js": "^6.4.24",
     "webpack": "^3.4.1",
     "when": "^3.7.8"
-  },
-  "java": {
-    "dependencies": [
-      {
-        "groupId": "net.imagej",
-        "artifactId": "imagej",
-        "version": "2.0.0-rc-65"
-      },
-      {
-        "groupId": "net.imagej",
-        "artifactId": "imagej-legacy",
-        "version": "0.29.0"
-      }
-    ],
-    "repositories": [
-      {
-        "id": "imagej.public",
-        "url": "https://maven.imagej.net/content/groups/public/"
-      }
-    ],
-    "exclusions": [
-      {
-        "groupId": "org.scijava",
-        "artifactId": "scripting-jruby"
-      },
-      {
-        "groupId": "net.imglib2",
-        "artifactId": "imglib2-realtransform"
-      }
-    ]
   }
 }

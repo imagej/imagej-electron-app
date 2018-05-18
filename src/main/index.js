@@ -11,42 +11,18 @@ const url = require('url')
 
 console.log('==> Booting Java');
 
-var java = require('java');
-var mvn = require('node-java-maven');
+config = {}
+config.imagej_dir = process.env.IMAGEJ_DIR
+if (!config.imagej_dir) throw ('Please set IMAGEJ_DIR to your ImageJ installation folder.')
 
-mvn(function(err, mvnResults) {
-  console.log('inside maven')
-  if (err) {
-    return console.error('could not resolve maven dependencies', err);
-  }
-  mvnResults.classpath.forEach(function(c) {
-    java.classpath.push(c);
-  });
+var imagej = require('imagej')(config);
 
-  java.asyncOptions = {
-    asyncSuffix: "Async",
-    syncSuffix: "",
-    promiseSuffix: "Promise",
-    promisify: require("when/node").lift
-  };
-
-  var System = java.import('java.lang.System');
-  var javaVersion = System.getProperty('java.version');
-  console.log('==> Java version = ' + javaVersion);
-
-  console.log('==> ImageJ STARTING!');
-  var ImageJ = java.import('net.imagej.ImageJ');
-  ij = ImageJ();
-  console.log('==> ImageJ READY!');
-
-  var Intervals = java.import('net.imglib2.util.Intervals');
-  var Views     = java.import('net.imglib2.view.Views');
-
-  var volumes = new Map();
+imagej.on('ready', function(ij) {
+  console.log('==> ImageJ READY')
 
   ipcMain.on('showimagejui', (event) => {
     console.log('Displaying the ImageJ UI');
-    ij.ui().showUIAsync();
+    ij.ui().showUILater();
   });
 
   ipcMain.on('filereceived', (event, filePath) => {
@@ -92,21 +68,7 @@ mvn(function(err, mvnResults) {
       //ipcMain.send('parsecomplete', info);
     });
   });
-
-  ipcMain.on('blockrequested', (event, block) => {
-    data = volumes.get(block.path);
-    region = Views.interval(data, block.min, block.max);
-    // START HERE: copy the region into desired primitive(?) structure.
-    /*
-    x = region.dimension(0)
-    y = region.dimension(1)
-    z = region.dimension(2)
-    float[] data = new float[x * y * z]
-    outImg = ArrayImgs.floats(data, x, y, z)
-    ij.ops().convert().float32(outImg, img)
-    */
-  });
-});
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -118,7 +80,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, '../renderer/index.html'),
     protocol: 'file:',
     slashes: true
   }))
