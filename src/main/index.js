@@ -9,72 +9,6 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 
-console.log('==> Booting Java');
-
-config = {}
-config.imagej_dir = process.env.IMAGEJ_DIR
-if (!config.imagej_dir) throw ('Please set IMAGEJ_DIR to your ImageJ installation folder.')
-
-var imagej = require('imagej')(config);
-
-imagej.on('ready', function(ij) {
-  console.log('==> ImageJ READY')
-
-  java = require('java')
-  Views = java.import('net.imglib2.view.Views')
-  Intervals = java.import('net.imglib2.util.Intervals')
-
-  ipcMain.on('showimagejui', (event) => {
-    console.log('Displaying the ImageJ UI');
-    ij.ui().showUILater();
-  });
-
-  var volumes = new Map()
-  ipcMain.on('filereceived', (event, filePath) => {
-    console.log('Asking ImageJ to read: ' + filePath);
-    ij.scifio().datasetIO().openPromise(filePath).then(data => {
-      // Keep a table of current data objects, keyed on name/path.
-      volumes.set(filePath, data);
-
-      // Ensure the data is (at least) 3-dimensional.
-      while (data.numDimensions() < 3) {
-        data = Views.addDimension(data, 0, 0);
-      }
-
-      var info = {}
-      info.name = filePath;
-
-      // Extract dimensional lengths.
-      dims = Intervals.dimensionsAsLongArray(data);
-      info.x = dims[0].longValue();
-      info.y = dims[1].longValue();
-      info.z = dims[2].longValue();
-      console.log('Dimensions = ' + info.x + ', ' + info.y + ', ' + info.z);
-
-      // Extract the pixel type.
-      typeName = data.firstElement().getClass().getName();
-      if (typeName.endsWith(".UnsignedByteType")) {
-        info.type = "uint8";
-      }
-      else if (typeName.endsWith(".UnsignedShortType")) {
-        info.type = "uint16";
-      }
-      else {
-        info.type = "float32";
-      }
-      console.log('Type = ' + info.type + ' (' + typeName + ')');
-
-      // TODO: handle axis types:
-      // - data.axis(0)
-      // TODO: handle physical sizes:
-      // - ((CalibratedAxis) data.axis(0)).averageScale(0, 1)
-
-      // START HERE - Why can't I do this?
-      //ipcMain.send('parsecomplete', info);
-    });
-  });
-})
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -91,7 +25,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
