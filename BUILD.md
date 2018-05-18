@@ -20,17 +20,14 @@ node ./node_modules/java/postInstall.js
 ./node_modules/.bin/node-java-maven
 ```
 
-## Manual download of JRE
+## Manual download of Fiji
 MacOS:
-```curl https://downloads.imagej.net/java/macosx.tar.gz | tar vzx```
+```curl https://downloads.imagej.net/fiji/latest/fiji-macosx.tar.gz | tar vzx```
 
-Linux:
-```curl https://downloads.imagej.net/java/linux-amd64.tar.gz | tar vzx```
-
-This will expand as ```jre1.8.0_172.jre```.
+This will expand as ```Fiji.app```.
 
 ## Update the rpath in nodejavabridge_bindings.node for a relative path
-```node  fixrpath.js```
+```node fixrpath.js```
 
 ## Finally, go:
 ```
