@@ -39,8 +39,8 @@ holder.ondrop = (e) => {
       var dims = Intervals.dimensionsAsLongArray(data);
       var width = dims[0].longValue();
       var height = dims[1].longValue();
-      var depth = dims[2].longValue();
-      console.log('Dimensions = ' + width + ', ' + height + ', ' + depth);
+      var channels = dims[2].longValue();
+      console.log('Dimensions = ' + width + ' x ' + height + ' -- ' + channels + ' channels');
 
       // Extract the pixel type.
       var typeName = data.firstElement().getClass().getName();
@@ -56,18 +56,28 @@ holder.ondrop = (e) => {
       }
       console.log('Type = ' + pixeltype + ' (' + typeName + ')');
 
-      var iterator = Views.flatIterable(data).iterator()
+      var extended = channels == 2 ? Views.extendZero(data) : Views.extendBorder(data)
+      var access = extended.randomAccess()
       var i = 0
-      var data = []
-      while (iterator.hasNext()) {
-        data[i++] = iterator.next().getRealDouble()
+      var pixels = []
+      for (var y = 0; y < height; y++) {
+        access.setPosition(y, 1);
+        for (var x = 0; x < width; x++) {
+          access.setPosition(x, 0);
+          for (var c = 0; c < 3; c++) {
+            access.setPosition(c, 2);
+            pixels[4 * i + c] = access.get().getRealDouble()
+          }
+          pixels[4 * i + 3] = 255 // alpha channel
+          i++;
+        }
       }
-      console.log('got data of length: ' + data.length + '; middle value = ' + data[data.length / 2])
-      console.log(data)
+      console.log('got pixels of length: ' + pixels.length + '; middle value = ' + pixels[pixels.length / 2])
+      console.log(pixels)
 
       imageBlit(
         "image",
-        data,
+        pixels,
         width,
         height
       );
