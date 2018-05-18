@@ -89,6 +89,7 @@ var imagejButton = document.getElementById('imagej')
 console.log('==> Booting Java');
 
 config = {}
+config.headless = true
 config.imagej_dir = process.env.IMAGEJ_DIR
 if (!config.imagej_dir) {
   // Search for ImageJ in common locations (covers npm run, electron app, and standard OS X)
