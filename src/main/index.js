@@ -20,11 +20,16 @@ var imagej = require('imagej')(config);
 imagej.on('ready', function(ij) {
   console.log('==> ImageJ READY')
 
+  java = require('java')
+  Views = java.import('net.imglib2.view.Views')
+  Intervals = java.import('net.imglib2.util.Intervals')
+
   ipcMain.on('showimagejui', (event) => {
     console.log('Displaying the ImageJ UI');
     ij.ui().showUILater();
   });
 
+  var volumes = new Map()
   ipcMain.on('filereceived', (event, filePath) => {
     console.log('Asking ImageJ to read: ' + filePath);
     ij.scifio().datasetIO().openPromise(filePath).then(data => {
