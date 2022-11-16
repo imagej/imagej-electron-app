@@ -21,7 +21,7 @@
   "devDependencies": {
     "electron": "~2.0.8",
     "electron-rebuild": "^1.7.3",
-    "electron-packager": "^12.0.2"
+    "electron-packager": "^16.0.0"
   },
   "dependencies": {
     "imagej": "^1.0.0",
